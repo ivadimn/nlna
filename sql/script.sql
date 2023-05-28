@@ -18,3 +18,13 @@ CREATE TABLE public.variant (
 	f_created_at date NOT NULL,
 	CONSTRAINT variant_pk PRIMARY KEY (id)
 );
+CREATE TABLE public.task_variant (
+	id serial NOT NULL,
+	variant_id int NOT NULL,
+	task_id int NOT NULL,
+	f_ordinal int NULL,
+	CONSTRAINT task_variant_pk PRIMARY KEY (id),
+	CONSTRAINT task_variant_un UNIQUE (variant_id,task_id),
+	CONSTRAINT task_variant_fk FOREIGN KEY (task_id) REFERENCES public.task(id),
+	CONSTRAINT task_variant_fk_1 FOREIGN KEY (variant_id) REFERENCES public.variant(id)
+);
