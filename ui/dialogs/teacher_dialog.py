@@ -23,5 +23,21 @@ class TeacherDialog(QDialog):
         btn_ok = QPushButton("Ok", parent=self)
         btn_cancel = QPushButton("Отмена", parent=self)
 
+        vbox = QVBoxLayout(self)
+        vbox.addWidget(lbl_fio)
+        vbox.addWidget(self.__edt_fio)
+        vbox.addWidget(lbl_phone)
+        vbox.addWidget(self.__edt_phone)
+        vbox.addWidget(lbl_email)
+        vbox.addWidget(self.__edt_email)
+        vbox.addWidget(lbl_comment)
+        vbox.addWidget(self.__edt_comment)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(btn_ok)
+        hbox.addWidget(btn_cancel)
+        vbox.addLayout(hbox)
+
+        btn_cancel.clicked.connect(self.reject)
 
 
