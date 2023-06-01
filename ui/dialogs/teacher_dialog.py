@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtWidgets import QLabel, QLineEdit, QTextEdit, QPushButton
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
+from PyQt6.QtCore import pyqtSlot
 
 
 class TeacherDialog(QDialog):
@@ -39,5 +40,30 @@ class TeacherDialog(QDialog):
         vbox.addLayout(hbox)
 
         btn_cancel.clicked.connect(self.reject)
+        btn_ok.clicked.connect(self.finish)
 
+    @property
+    def fio(self):
+        result = self.__edt_fio.text().strip()
+        return None if result == "" else result
 
+    @property
+    def phone(self):
+        result = self.__edt_phone.text().strip()
+        return None if result == "" else result
+
+    @property
+    def email(self):
+        result = self.__edt_email.text().strip()
+        return None if result == "" else result
+
+    @property
+    def comment(self):
+        result = self.__edt_comment.toPlainText().strip()
+        return None if result == "" else result
+
+    @pyqtSlot()
+    def finish(self):
+        if self.fio is None:
+            return
+        self.accept()

@@ -1,5 +1,5 @@
 db_params = {
-    "host": "192.168.0.124",
+    "host": "10.0.0.101",
     "port": 5432,
     "user": "lna2admin",
     "dbname": "lna2",
