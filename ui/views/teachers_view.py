@@ -13,8 +13,10 @@ class TeachersView(QTableView):
     @pyqtSlot()
     def add(self):
         dlg = TeacherDialog(parent=self)
-        dlg.exec()
-        #QMessageBox.information(self, "Учитель", "Добавление")
+        if dlg.exec():
+            self.model().add1(dlg.fio, dlg.phone, dlg.email, dlg.comment)
+
+
 
     @pyqtSlot()
     def update(self):
