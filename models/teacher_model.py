@@ -8,6 +8,10 @@ INSERT = """
     VALUES(%s, %s, %s, %s);
 """
 
+QINSERT = """
+    INSERT INTO teacher (f_fio, f_phone, f_email, f_comment) 
+    VALUES(?, ?, ?, ?);
+"""
 
 class TeacherModel(QSqlQueryModel):
     def __init__(self, parent=None):
@@ -16,7 +20,7 @@ class TeacherModel(QSqlQueryModel):
 
     def refresh(self):
         sql = "SELECT id, f_fio, f_phone, f_email, f_comment FROM teacher;"
-        self.setQuery(sql, Connection().connection )
+        self.setQuery(sql)
 
     def add(self, fio, phone, email, comment):
         conn = ConnectionNative().connection
@@ -27,13 +31,16 @@ class TeacherModel(QSqlQueryModel):
         self.refresh()
 
     def add1(self, fio, phone, email, comment):
-        query = QSqlQuery(Connection().connection)
-        query.prepare(INSERT)
+        query = QSqlQuery()
+        query.prepare(QINSERT)
         query.addBindValue(fio)
         query.addBindValue(phone)
         query.addBindValue(email)
         query.addBindValue(comment)
-        query.exec()
+        print(query.exec())
+        print(query.lastError())
+        print(query.lastQuery())
+
         self.refresh()
 
 

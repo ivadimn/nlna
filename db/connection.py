@@ -20,10 +20,10 @@ class Connection:
         self.__connection.setUserName(db_params["user"])
         self.__connection.setPassword(db_params["password"])
         ok = self.__connection.open()
-        if ok:
-            print("Connection successed!")
-        else:
-            print("Connection failed!")
+        # if ok:
+        #     print("Connection successed!")
+        # else:
+        #     print("Connection failed!")
 
     def __del__(self):
         if self.__connection:
