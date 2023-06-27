@@ -3,14 +3,19 @@ from db.connection import ConnectionNative, Connection
 import psycopg
 
 
+# INSERT = """
+#     INSERT INTO teacher (f_fio, f_phone, f_email, f_comment)
+#     VALUES(%s, %s, %s, %s);
+# """
+
 INSERT = """
     INSERT INTO teacher (f_fio, f_phone, f_email, f_comment) 
-    VALUES(%s, %s, %s, %s);
+    VALUES(?, ?, ?, ?);
 """
 
-QINSERT = """
-    INSERT INTO teacher (f_fio, f_phone, f_email, f_comment) 
-    VALUES(?, ?, ?, ?);
+UPDATE = """
+    UPDATE teacher SET f_fio=?, f_phone=?, f_email=?, f_comment=? 
+    WHERE id=? ;
 """
 
 class TeacherModel(QSqlQueryModel):
@@ -32,15 +37,12 @@ class TeacherModel(QSqlQueryModel):
 
     def add1(self, fio, phone, email, comment):
         query = QSqlQuery()
-        query.prepare(QINSERT)
+        query.prepare(INSERT)
         query.addBindValue(fio)
         query.addBindValue(phone)
         query.addBindValue(email)
         query.addBindValue(comment)
-        print(query.exec())
-        print(query.lastError())
-        print(query.lastQuery())
-
+        query.exec()
         self.refresh()
 
 
