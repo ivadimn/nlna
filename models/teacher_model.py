@@ -18,6 +18,11 @@ UPDATE = """
     WHERE id=? ;
 """
 
+DELETE = """
+    UPDATE teacher SET f_fio=?, f_phone=?, f_email=?, f_comment=? 
+    WHERE id=? ;
+"""
+
 class TeacherModel(QSqlQueryModel):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,14 +33,6 @@ class TeacherModel(QSqlQueryModel):
         self.setQuery(sql)
 
     def add(self, fio, phone, email, comment):
-        conn = ConnectionNative().connection
-        cursor = conn.cursor()
-        data = (fio, phone, email, comment)
-        cursor.execute(INSERT, data)
-        conn.commit()
-        self.refresh()
-
-    def add1(self, fio, phone, email, comment):
         query = QSqlQuery()
         query.prepare(INSERT)
         query.addBindValue(fio)

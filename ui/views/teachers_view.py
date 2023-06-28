@@ -14,7 +14,7 @@ class TeachersView(QTableView):
     def add(self):
         dlg = TeacherDialog(parent=self)
         if dlg.exec():
-            self.model().add1(dlg.fio, dlg.phone, dlg.email, dlg.comment)
+            self.model().add(dlg.fio, dlg.phone, dlg.email, dlg.comment)
 
 
 
