@@ -7,21 +7,32 @@ from ui.dialogs.teacher_dialog import TeacherDialog
 class TeachersView(QTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
-        model = TeacherModel(parent=self)
-        self.setModel(model)
+        self.model = TeacherModel(parent=self)
+        self.setModel(self.model)
 
     @pyqtSlot()
     def add(self):
         dlg = TeacherDialog(parent=self)
         if dlg.exec():
-            self.model().add(dlg.fio, dlg.phone, dlg.email, dlg.comment)
-
-
+            self.model.add(dlg.fio, dlg.phone, dlg.email, dlg.comment)
 
     @pyqtSlot()
     def update(self):
-        QMessageBox.information(self, "Учитель", "Редактирование")
+        dlg = TeacherDialog(parent=self)
+        row = self.currentIndex().row()
+        rid = self.model.record(row).value(0)
+        (dlg.fio, dlg.phone, dlg.email, dlg.comment) = self.model.select(rid)
+        if dlg.exec():
+            self.model.update(rid, dlg.fio, dlg.phone, dlg.email, dlg.comment)
+
+
 
     @pyqtSlot()
     def delete(self):
-        QMessageBox.information(self, "Учитель", "Удаление")
+        row = self.currentIndex().row()
+        rid = self.model.record(row).value(0)
+        ans = QMessageBox.question(self, "Удаление записи", "Вы уверены, что хотите удалить запись?")
+        if ans == QMessageBox.StandardButton.Yes:
+            self.model.delete(rid)
+
+
