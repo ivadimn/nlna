@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setGeometry(100, 100, 500, 250)
+        self.setGeometry(250, 250, 1000, 500)
 
         main_menu = MainMenu(parent=self)
         self.setMenuBar(main_menu)
