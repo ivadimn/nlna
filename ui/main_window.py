@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSlot
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
+from ui.views.student_view import StudentView
 
 
 class MainWindow(QMainWindow):
@@ -19,7 +20,7 @@ class MainWindow(QMainWindow):
         main_menu.teacher_update.triggered.connect(self.teacher_update)
         main_menu.teacher_delete.triggered.connect(self.teacher_delete)
 
-        self.__teachers_view = TeachersView(parent=self)
+        self.__teachers_view = StudentView(parent=self)
         self.setCentralWidget(self.__teachers_view)
 
     @pyqtSlot()

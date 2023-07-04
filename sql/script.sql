@@ -51,3 +51,19 @@ CREATE TABLE public.task_variant (
 -- public.task_variant foreign keys
 ALTER TABLE public.task_variant ADD CONSTRAINT task_variant_fk FOREIGN KEY (task_id) REFERENCES public.task(id);
 ALTER TABLE public.task_variant ADD CONSTRAINT task_variant_fk_1 FOREIGN KEY (variant_id) REFERENCES public.variant(id);
+
+CREATE TABLE public.student (
+	id serial4 NOT NULL,
+	f_fio varchar NOT NULL,
+	f_phone varchar NULL,
+	f_email varchar NULL,
+	f_comment text NULL,
+	CONSTRAINT student_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE public.groups (
+	id serial4 NOT NULL,
+	f_number varchar NOT NULL,
+	f_name varchar NOT NULL,
+	CONSTRAINT groups_pk PRIMARY KEY (id)
+);
