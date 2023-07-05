@@ -1,25 +1,17 @@
-from PyQt6.QtWidgets import QTableView, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import pyqtSlot
 from models.teacher_model import TeacherModel
 from ui.dialogs.teacher_dialog import TeacherDialog
+from ui.views.view import View
 
 
-class TeachersView(QTableView):
+class TeachersView(View):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.model = TeacherModel(parent=self)
         self.setModel(self.model)
 
-        self.setSelectionBehavior(self.SelectionBehavior.SelectRows)
-        self.setSelectionMode(self.SelectionMode.SingleSelection)
-        self.hideColumn(0)
-        self.setWordWrap(False)
-
-        vh = self.verticalHeader()
-        vh.setSectionResizeMode(vh.ResizeMode.Fixed)
-
         hh = self.horizontalHeader()
-        hh.setSectionResizeMode(hh.ResizeMode.ResizeToContents)
         hh.setSectionResizeMode(4, hh.ResizeMode.Stretch)
 
     @pyqtSlot()
@@ -36,8 +28,6 @@ class TeachersView(QTableView):
         (dlg.fio, dlg.phone, dlg.email, dlg.comment) = self.model.select(rid)
         if dlg.exec():
             self.model.update(rid, dlg.fio, dlg.phone, dlg.email, dlg.comment)
-
-
 
     @pyqtSlot()
     def delete(self):

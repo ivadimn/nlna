@@ -1,34 +1,34 @@
-from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QTableView, QMessageBox
 from PyQt6.QtCore import pyqtSlot
-from models.student_model import StudentModel
-from ui.dialogs.student_dialog import StudentDialog
+from models.group_model import GroupModel
+from ui.dialogs.group_dialog import GroupDialog
 from ui.views.view import View
 
 
-class StudentView(View):
+class GroupView(View):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.model = StudentModel()
+        self.model = GroupModel()
         self.setModel(self.model)
 
         hh = self.horizontalHeader()
-        hh.setSectionResizeMode(3, hh.ResizeMode.Stretch)
+        hh.setSectionResizeMode(2, hh.ResizeMode.Stretch)
 
     @pyqtSlot()
     def add(self):
-        dlg = StudentDialog(parent=self)
+        dlg = GroupDialog(parent=self)
         if dlg.exec():
-            self.model.add(dlg.fio, dlg.email, dlg.comment)
+            self.model.add(dlg.title, dlg.comment)
 
     @pyqtSlot()
     def update(self):
-        dlg = StudentDialog(parent=self)
+        dlg = GroupDialog(parent=self)
         row = self.currentIndex().row()
         rid = self.model.record(row).value(0)
-        (dlg.fio, dlg.email, dlg.comment) = self.model.select(rid)
+        (dlg.title, dlg.comment,) = self.model.select(rid)
         if dlg.exec():
-            self.model.update(rid, dlg.fio, dlg.email, dlg.comment)
+            self.model.update(rid, dlg.title, dlg.comment)
 
     @pyqtSlot()
     def delete(self):

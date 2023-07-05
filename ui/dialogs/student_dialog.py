@@ -14,9 +14,6 @@ class StudentDialog(QDialog):
         lbl_fio = QLabel("Фамилия, Имя, Отчество", parent=self)
         self.__edt_fio = QLineEdit(parent=self)
 
-        lbl_phone = QLabel("Телефон", parent=self)
-        self.__edt_phone = QLineEdit(parent=self)
-
         lbl_email = QLabel("E-mail", parent=self)
         self.__edt_email = QLineEdit(parent=self)
 
@@ -34,20 +31,12 @@ class StudentDialog(QDialog):
         lay_fam.addWidget(self.__edt_fio)
         vbox.addLayout(lay_fam)
 
-        lay_phone = QVBoxLayout()
-        lay_phone.setSpacing(0)
-        lay_phone.addWidget(lbl_phone)
-        lay_phone.addWidget(self.__edt_phone)
-
         lay_email = QVBoxLayout()
         lay_email.setSpacing(0)
         lay_email.addWidget(lbl_email)
         lay_email.addWidget(self.__edt_email)
 
-        lay_phone_email = QHBoxLayout()
-        lay_phone_email.addLayout(lay_phone)
-        lay_phone_email.addLayout(lay_email)
-        vbox.addLayout(lay_phone_email)
+        vbox.addLayout(lay_email)
 
         lay_comment = QVBoxLayout()
         lay_comment.setSpacing(0)
@@ -72,15 +61,6 @@ class StudentDialog(QDialog):
     @fio.setter
     def fio(self, value: str):
         self.__edt_fio.setText(value)
-
-    @property
-    def phone(self):
-        result = self.__edt_phone.text().strip()
-        return None if result == "" else result
-
-    @phone.setter
-    def phone(self, value: str):
-        self.__edt_phone.setText(value)
 
     @property
     def email(self):

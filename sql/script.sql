@@ -55,7 +55,6 @@ ALTER TABLE public.task_variant ADD CONSTRAINT task_variant_fk_1 FOREIGN KEY (va
 CREATE TABLE public.student (
 	id serial4 NOT NULL,
 	f_fio varchar NOT NULL,
-	f_phone varchar NULL,
 	f_email varchar NULL,
 	f_comment text NULL,
 	CONSTRAINT student_pk PRIMARY KEY (id)
@@ -63,7 +62,7 @@ CREATE TABLE public.student (
 
 CREATE TABLE public.groups (
 	id serial4 NOT NULL,
-	f_number varchar NOT NULL,
-	f_name varchar NOT NULL,
+	f_title varchar NOT NULL,
+	f_comment varchar NULL,
 	CONSTRAINT groups_pk PRIMARY KEY (id)
 );

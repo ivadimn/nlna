@@ -2,33 +2,34 @@ from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
 
 
 SELECT_BY_ID = """
-   SELECT f_fio, f_email, f_comment 
-   FROM student
+   SELECT f_title, f_comment 
+   FROM groups
    WHERE id=? ; 
 """
 
 INSERT = """
-    INSERT INTO student (f_fio, f_email, f_comment) 
-    VALUES(?, ?, ?);
+    INSERT INTO groups (f_title, f_comment) 
+    VALUES(?, ?);
 """
 
 UPDATE = """
-    UPDATE student SET f_fio=?, f_email=?, f_comment=? 
+    UPDATE groups SET f_title=?, f_comment=? 
     WHERE id=? ;
 """
 
 DELETE = """
-    DELETE FROM student WHERE id=? ;
+    DELETE FROM groups WHERE id=? ;
 """
 
 
-class StudentModel(QSqlQueryModel):
+class GroupModel(QSqlQueryModel):
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.refresh()
 
     def refresh(self):
-        sql = "SELECT id, f_fio, f_email, f_comment FROM student;"
+        sql = "SELECT id, f_title, f_comment FROM groups ;"
         self.setQuery(sql)
 
     def select(self, rid: int) -> tuple:
@@ -37,25 +38,23 @@ class StudentModel(QSqlQueryModel):
         query.addBindValue(rid)
         query.exec()
         if query.first():
-            result = (query.value("f_fio"), query.value("f_email"), query.value("f_comment"),)
+            result = (query.value("f_title"), query.value("f_comment"))
         else:
-            result = (None, None, None)
+            result = (None, None,)
         return result
 
-    def add(self, fio, email, comment):
+    def add(self, title: str, comment: str):
         query = QSqlQuery()
         query.prepare(INSERT)
-        query.addBindValue(fio)
-        query.addBindValue(email)
+        query.addBindValue(title)
         query.addBindValue(comment)
         query.exec()
         self.refresh()
 
-    def update(self, rid: int, fio: str, email: str, comment: str):
+    def update(self, rid: int, title: str, comment: str):
         query = QSqlQuery()
         query.prepare(UPDATE)
-        query.addBindValue(fio)
-        query.addBindValue(email)
+        query.addBindValue(title)
         query.addBindValue(comment)
         query.addBindValue(rid)
         query.exec()
