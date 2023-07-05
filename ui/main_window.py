@@ -2,15 +2,13 @@ from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSlot
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
-from ui.views.student_view import StudentView
-from ui.views.group_view import GroupView
 
 
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setGeometry(250, 250, 1000, 500)
+        self.setGeometry(300, 300, 1000, 500)
 
         main_menu = MainMenu(parent=self)
         self.setMenuBar(main_menu)
@@ -21,8 +19,6 @@ class MainWindow(QMainWindow):
         self.__view = TeachersView(parent=self)
         main_menu.set_teacher_mode(self.__view)
         self.setCentralWidget(self.__view)
-
-
 
     @pyqtSlot()
     def about(self):

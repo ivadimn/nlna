@@ -1,5 +1,6 @@
 from PyQt6.QtGui import QActionGroup
 from PyQt6.QtWidgets import QMenuBar
+from PyQt6.QtCore import pyqtSlot
 
 from ui.views.view import View
 
@@ -32,19 +33,34 @@ class MainMenu(QMenuBar):
         mode_action_group = ag = QActionGroup(self)
         self.__teacher_mode_action = act = menu.addAction("Учителя")
         act.setCheckable(True)
+        act.toggled.connect(self.toggle_teacher_mode)
         ag.addAction(act)
 
         self.__student_mode_action = act = menu.addAction("Студенты")
         act.setCheckable(True)
+        act.toggled.connect(self.toggle_student_mode)
         ag.addAction(act)
 
         self.__group_mode_action = act = menu.addAction("Группы")
         act.setCheckable(True)
+        act.toggled.connect(self.toggle_group_mode)
         ag.addAction(act)
 
         help_menu = self.addMenu("Справка")
         self.__about = help_menu.addAction("О программе...")
         self.__about_qt = help_menu.addAction("О библиотеке Qt...")
+
+    @pyqtSlot(bool)
+    def toggle_teacher_mode(self, enable: bool):
+        print(f"Teacher = {enable}")
+
+    @pyqtSlot(bool)
+    def toggle_student_mode(self, enable: bool):
+        print(f"Student = {enable}")
+
+    @pyqtSlot(bool)
+    def toggle_group_mode(self, enable: bool):
+        print(f"Teacher = {enable}")
 
     def set_group_mode(self, view: View):
         self.__group_add.triggered.connect(view.add)
