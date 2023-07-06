@@ -25,6 +25,7 @@ class TeachersView(View):
         dlg = TeacherDialog(parent=self)
         row = self.currentIndex().row()
         rid = self.model.record(row).value(0)
+        print(rid)
         (dlg.fio, dlg.phone, dlg.email, dlg.comment) = self.model.select(rid)
         if dlg.exec():
             self.model.update(rid, dlg.fio, dlg.phone, dlg.email, dlg.comment)

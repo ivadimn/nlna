@@ -1,11 +1,15 @@
 from PyQt6.QtGui import QActionGroup
 from PyQt6.QtWidgets import QMenuBar
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 from ui.views.view import View
 
 
 class MainMenu(QMenuBar):
+
+    teacher_mode_request = pyqtSignal()
+    student_mode_request = pyqtSignal()
+    group_mode_request = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -52,15 +56,36 @@ class MainMenu(QMenuBar):
 
     @pyqtSlot(bool)
     def toggle_teacher_mode(self, enable: bool):
-        print(f"Teacher = {enable}")
+        if not enable:
+            self.__teacher_menu_action.setVisible(False)
+            self.__teacher_menu_action.setEnabled(False)
+            self.__teacher_add.setEnabled(False)
+            self.__teacher_update.setEnabled(False)
+            self.__teacher_delete.setEnabled(False)
+        else:
+            self.teacher_mode_request.emit()
 
     @pyqtSlot(bool)
     def toggle_student_mode(self, enable: bool):
-        print(f"Student = {enable}")
+        if not enable:
+            self.__student_menu_action.setVisible(False)
+            self.__student_menu_action.setEnabled(False)
+            self.__student_add.setEnabled(False)
+            self.__student_update.setEnabled(False)
+            self.__student_delete.setEnabled(False)
+        else:
+            self.student_mode_request.emit()
 
     @pyqtSlot(bool)
     def toggle_group_mode(self, enable: bool):
-        print(f"Teacher = {enable}")
+        if not enable:
+            self.__group_menu_action.setVisible(False)
+            self.__group_menu_action.setEnabled(False)
+            self.__group_add.setEnabled(False)
+            self.__group_update.setEnabled(False)
+            self.__group_delete.setEnabled(False)
+        else:
+            self.group_mode_request.emit()
 
     def set_group_mode(self, view: View):
         self.__group_add.triggered.connect(view.add)
@@ -73,18 +98,6 @@ class MainMenu(QMenuBar):
         self.__group_update.setEnabled(True)
         self.__group_delete.setEnabled(True)
 
-        self.__teacher_menu_action.setVisible(False)
-        self.__teacher_menu_action.setEnabled(False)
-        self.__teacher_add.setEnabled(False)
-        self.__teacher_update.setEnabled(False)
-        self.__teacher_delete.setEnabled(False)
-
-        self.__student_menu_action.setVisible(False)
-        self.__student_menu_action.setEnabled(False)
-        self.__student_add.setEnabled(False)
-        self.__student_update.setEnabled(False)
-        self.__student_delete.setEnabled(False)
-
     def set_teacher_mode(self, view: View):
         self.__teacher_add.triggered.connect(view.add)
         self.__teacher_update.triggered.connect(view.update)
@@ -95,18 +108,6 @@ class MainMenu(QMenuBar):
         self.__teacher_add.setEnabled(True)
         self.__teacher_update.setEnabled(True)
         self.__teacher_delete.setEnabled(True)
-
-        self.__group_menu_action.setVisible(False)
-        self.__group_menu_action.setEnabled(False)
-        self.__group_add.setEnabled(False)
-        self.__group_update.setEnabled(False)
-        self.__group_delete.setEnabled(False)
-
-        self.__student_menu_action.setVisible(False)
-        self.__student_menu_action.setEnabled(False)
-        self.__student_add.setEnabled(False)
-        self.__student_update.setEnabled(False)
-        self.__student_delete.setEnabled(False)
 
     def set_student_mode(self, view: View):
         self.__student_add.triggered.connect(view.add)
@@ -119,18 +120,24 @@ class MainMenu(QMenuBar):
         self.__student_update.setEnabled(True)
         self.__student_delete.setEnabled(True)
 
-        self.__group_menu_action.setVisible(False)
-        self.__group_menu_action.setEnabled(False)
-        self.__group_add.setEnabled(False)
-        self.__group_update.setEnabled(False)
-        self.__group_delete.setEnabled(False)
-
+    def disable_all_modes(self):
         self.__teacher_menu_action.setVisible(False)
         self.__teacher_menu_action.setEnabled(False)
         self.__teacher_add.setEnabled(False)
         self.__teacher_update.setEnabled(False)
         self.__teacher_delete.setEnabled(False)
 
+        self.__student_menu_action.setVisible(False)
+        self.__student_menu_action.setEnabled(False)
+        self.__student_add.setEnabled(False)
+        self.__student_update.setEnabled(False)
+        self.__student_delete.setEnabled(False)
+
+        self.__group_menu_action.setVisible(False)
+        self.__group_menu_action.setEnabled(False)
+        self.__group_add.setEnabled(False)
+        self.__group_update.setEnabled(False)
+        self.__group_delete.setEnabled(False)
 
     @property
     def about(self):

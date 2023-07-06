@@ -66,3 +66,24 @@ CREATE TABLE public.groups (
 	f_comment varchar NULL,
 	CONSTRAINT groups_pk PRIMARY KEY (id)
 );
+
+CREATE TABLE public.appuser (
+    id serial4 NOT NULL,
+    f_login varchar NOT NULL,
+    f_password_hash varchar,
+    f_enabled bool NOT NULL DEFAULT TRUE,
+    f_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    f_expire timestamp,
+    CONSTRAINT appuser_pk PRIMARY KEY (id),
+	CONSTRAINT appuser_un UNIQUE (f_login)
+);
+
+ALTER TABLE public.teacher ADD user_id int NULL;
+ALTER TABLE public.teacher ADD CONSTRAINT teacher_fk FOREIGN KEY (user_id) REFERENCES public.appuser(id);
+
+ALTER TABLE public.student ADD user_id int NULL;
+ALTER TABLE public.student ADD CONSTRAINT student_fk FOREIGN KEY (user_id) REFERENCES public.appuser(id);
+
+ALTER TABLE public.student ALTER COLUMN user_id SET NOT NULL;
+ALTER TABLE public.teacher ALTER COLUMN user_id SET NOT NULL;
+
