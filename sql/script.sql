@@ -78,6 +78,11 @@ CREATE TABLE public.appuser (
 	CONSTRAINT appuser_un UNIQUE (f_login)
 );
 
+CREATE TYPE user_role AS ENUM ('teacher', 'student', 'admin');
+ALTER TABLE public.appuser ADD f_role user_role NULL;
+ALTER TABLE public.appuser ADD f_salt varchar NULL;
+
+
 ALTER TABLE public.teacher ADD user_id int NULL;
 ALTER TABLE public.teacher ADD CONSTRAINT teacher_fk FOREIGN KEY (user_id) REFERENCES public.appuser(id);
 
@@ -86,4 +91,8 @@ ALTER TABLE public.student ADD CONSTRAINT student_fk FOREIGN KEY (user_id) REFER
 
 ALTER TABLE public.student ALTER COLUMN user_id SET NOT NULL;
 ALTER TABLE public.teacher ALTER COLUMN user_id SET NOT NULL;
+
+ALTER TABLE public.appuser ALTER COLUMN f_role SET NOT NULL;
+ALTER TABLE public.appuser ALTER COLUMN f_salt SET NOT NULL;
+
 

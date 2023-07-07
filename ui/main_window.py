@@ -4,7 +4,13 @@ from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
 from ui.views.student_view import StudentView
 from ui.views.group_view import GroupView
+from ui.dialogs.login_dialog import LoginDialog
 
+SELECT_LOGIN = """
+    SELECT id, f_login, f_password_hash, f_enabled, f_expire, f role, f_salt
+    FROM appuser
+    WHERE f_login=? ;
+"""
 
 class MainWindow(QMainWindow):
 
@@ -20,7 +26,17 @@ class MainWindow(QMainWindow):
         main_menu.teacher_mode_request.connect(self.teacher_mode_on)
         main_menu.student_mode_request.connect(self.student_mode_on)
         main_menu.group_mode_request.connect(self.group_mode_on)
-        main_menu.disable_all_modes()
+
+        allowed_flag = False
+        if not self.authorize():
+            main_menu.lock()
+
+    def authorize(self) -> bool:
+        dlg = LoginDialog(self)
+        if not dlg.exec():
+            return False
+        return False
+
 
     @pyqtSlot()
     def about(self):

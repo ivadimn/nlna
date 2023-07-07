@@ -13,7 +13,8 @@ class Connection:
         return cls._instance
 
     def __init__(self):
-        self.__connection = QSqlDatabase.addDatabase("QPSQL")
+
+        self.__connection = QSqlDatabase.addDatabase("QPLSQ", "nlna_admin")
         self.__connection.setHostName(db_params["host"])
         self.__connection.setDatabaseName(db_params["dbname"])
         self.__connection.setPort(db_params["port"])
