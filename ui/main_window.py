@@ -1,16 +1,19 @@
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtSql import QSqlQuery
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
 from ui.views.student_view import StudentView
 from ui.views.group_view import GroupView
 from ui.dialogs.login_dialog import LoginDialog
+from datetime import datetime
+from db.connection import ConnectionPool
 
 SELECT_LOGIN = """
-    SELECT id, f_login, f_password_hash, f_enabled, f_expire, f role, f_salt
-    FROM appuser
-    WHERE f_login=? ;
+    SELECT id, f_login, f_password_hash, f_enabled, f_expire, f_role, f_salt
+    FROM appuser WHERE f_login=? ;
 """
+
 
 class MainWindow(QMainWindow):
 
@@ -35,7 +38,29 @@ class MainWindow(QMainWindow):
         dlg = LoginDialog(self)
         if not dlg.exec():
             return False
-        return False
+
+        query = QSqlQuery(ConnectionPool.get_admin_connection())
+        query.prepare(SELECT_LOGIN)
+        query.addBindValue(dlg.login)
+        query.exec()
+        if query.first():
+            user_id = query.value("id")
+            login = query.value("f_login")
+            password_hash = query.value("f_password_hash")
+            enabled = query.value("f_enabled")
+            expire = query.value("f_expire")
+            role = query.value("f_role")
+            salt = query.value("f_salt")
+            if not enabled:
+                return False
+            if expire is not None:
+                if expire < datetime.now():
+                    return False
+            print(user_id, login, password_hash, enabled, expire, role, salt)
+            return True
+        else:
+            return False
+
 
 
     @pyqtSlot()
