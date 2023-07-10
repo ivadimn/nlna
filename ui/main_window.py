@@ -7,7 +7,7 @@ from ui.views.student_view import StudentView
 from ui.views.group_view import GroupView
 from ui.dialogs.login_dialog import LoginDialog
 from datetime import datetime
-from db.connection import ConnectionPool
+from db.connection import ConnectionPool, get_user_info
 
 SELECT_LOGIN = """
     SELECT id, f_login, f_password_hash, f_enabled, f_expire, f_role, f_salt
@@ -38,25 +38,14 @@ class MainWindow(QMainWindow):
         dlg = LoginDialog(self)
         if not dlg.exec():
             return False
-
-        query = QSqlQuery(ConnectionPool.get_admin_connection())
-        query.prepare(SELECT_LOGIN)
-        query.addBindValue(dlg.login)
-        query.exec()
-        if query.first():
-            user_id = query.value("id")
-            login = query.value("f_login")
-            password_hash = query.value("f_password_hash")
-            enabled = query.value("f_enabled")
-            expire = query.value("f_expire")
-            role = query.value("f_role")
-            salt = query.value("f_salt")
-            if not enabled:
+        user_info = get_user_info(dlg.login)
+        if user_info:
+            if not user_info["enabled"]:
                 return False
-            if expire is not None:
-                if expire < datetime.now():
+            if user_info["expire"] is not None:
+                if user_info["expire"] < datetime.now():
                     return False
-            print(user_id, login, password_hash, enabled, expire, role, salt)
+            print(user_info)
             return True
         else:
             return False

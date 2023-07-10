@@ -1,6 +1,13 @@
-from PyQt6.QtSql import QSqlDatabase
+from typing import Optional
+
+from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 #import psycopg
 from settings import db_params
+
+SELECT_LOGIN = """
+    SELECT id, f_login, f_password_hash, f_enabled, f_expire, f_role, f_salt
+    FROM appuser WHERE f_login=? ;
+"""
 
 
 class Connection:
@@ -56,3 +63,24 @@ class ConnectionPool:
                 return value
         else:
             return cls.get_noadmin_connection()
+
+
+def get_user_info(login: str) -> Optional[dict]:
+    query = QSqlQuery(ConnectionPool.get_admin_connection())
+    query.prepare(SELECT_LOGIN)
+    query.addBindValue(login)
+    query.exec()
+    data = dict()
+    if query.first():
+        data["user_id"] = query.value("id")
+        data["login"] = query.value("f_login")
+        data["password_hash"] = query.value("f_password_hash")
+        data["enabled"] = query.value("f_enabled")
+        data["expire"] = query.value("f_expire")
+        data["role"] = query.value("f_role")
+        data["salt"] = query.value("f_salt")
+        return data
+    else:
+        return None
+
+
