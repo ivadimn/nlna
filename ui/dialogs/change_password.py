@@ -44,7 +44,6 @@ class ChangePassword(QDialog):
         result = self.__edt_passwd2.text().strip()
         return None if result == "" else result
 
-
     @pyqtSlot()
     def finish(self):
         if self.password1 != self.password2 or self.password1 is None:
