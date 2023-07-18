@@ -1,18 +1,14 @@
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSlot
-from PyQt6.QtSql import QSqlQuery
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
 from ui.views.student_view import StudentView
 from ui.views.group_view import GroupView
 from ui.dialogs.login_dialog import LoginDialog
+from ui.dialogs.change_password import ChangePassword
 from datetime import datetime
-from db.connection import ConnectionPool, get_user_info
-
-SELECT_LOGIN = """
-    SELECT id, f_login, f_password_hash, f_enabled, f_expire, f_role, f_salt
-    FROM appuser WHERE f_login=? ;
-"""
+from db.connection import get_user_info
+from utils import password_hash
 
 
 class MainWindow(QMainWindow):
@@ -39,16 +35,23 @@ class MainWindow(QMainWindow):
         if not dlg.exec():
             return False
         user_info = get_user_info(dlg.login)
-        if user_info:
-            if not user_info["enabled"]:
-                return False
-            if user_info["expire"] is not None:
-                if user_info["expire"] < datetime.now():
-                    return False
-            print(user_info)
-            return True
-        else:
+        if not user_info:
             return False
+        if not user_info["enabled"]:
+            return False
+        if user_info["expire"] is not None:
+            if user_info["expire"] < datetime.now():
+                return False
+        if user_info["password_hash"] is None:
+            dlg = ChangePassword(self)
+            if not dlg.exec():
+                return False
+            user_info["password_hash"] = password_hash(dlg.password1, user_info["salt"])
+        else:
+            print("Проверить пароль")
+        print(user_info)
+        return True
+
 
 
 

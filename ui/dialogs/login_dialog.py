@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout
 from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton
 from PyQt6.QtCore import pyqtSlot
+from settings import global_salt
+from hashlib import sha1, md5
 
 
 class LoginDialog(QDialog):
@@ -46,3 +48,9 @@ class LoginDialog(QDialog):
     def password(self):
         return self.__edt_passwd.text().strip()
 
+
+
+
+
+#data = "ивановвадимниколаевич21.06.19653d2cb093-f1b9-4a8d-b8ec-f15ada921033"
+#print(md5(data.encode("UTF-8")).hexdigest())
