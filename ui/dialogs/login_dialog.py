@@ -54,3 +54,5 @@ class LoginDialog(QDialog):
 
 #data = "ивановвадимниколаевич21.06.19653d2cb093-f1b9-4a8d-b8ec-f15ada921033"
 #print(md5(data.encode("UTF-8")).hexdigest())
+a : str  = "qqq"
+print(len(a))

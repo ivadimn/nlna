@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):
         if user_info["expire"] is not None:
             if user_info["expire"] < datetime.now():
                 return False
-        if user_info["password_hash"] is None:
+        if user_info["password_hash"] is None or len(user_info["password_hash"]) == 0:
             dlg = ChangePassword(self)
             if not dlg.exec():
                 return False
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
         else:
             print("Проверить пароль")
         print(user_info)
+
         return True
 
 

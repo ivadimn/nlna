@@ -8,4 +8,4 @@ def check_password(password: str, pwd_hash: str, salt: str) -> bool:
 
 def password_hash(password: str, salt: str) -> str:
     check = global_salt + password + salt
-    return sha1(check).hexdigest()
+    return sha1(check.encode("utf-8")).hexdigest()
