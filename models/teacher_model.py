@@ -1,5 +1,5 @@
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
-#from db.connection import ConnectionNative, Connection
+from db.connection import ConnectionPool
 #import psycopg
 
 
@@ -27,14 +27,15 @@ DELETE = """
 class TeacherModel(QSqlQueryModel):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.__db = ConnectionPool.get_admin_connection()
         self.refresh()
 
     def refresh(self):
         sql = "SELECT id, f_fio, f_phone, f_email, f_comment FROM teacher;"
-        self.setQuery(sql)
+        self.setQuery(sql, db=self.__db)
 
     def select(self, rid: int) -> tuple:
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(SELECT_BY_ID)
         query.addBindValue(rid)
         query.exec()
@@ -46,7 +47,7 @@ class TeacherModel(QSqlQueryModel):
         return result
 
     def add(self, fio, phone, email, comment):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(INSERT)
         query.addBindValue(fio)
         query.addBindValue(phone)
@@ -56,7 +57,7 @@ class TeacherModel(QSqlQueryModel):
         self.refresh()
 
     def update(self, rid: int, fio: str, phone: str, email: str, comment: str):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(UPDATE)
         query.addBindValue(fio)
         query.addBindValue(phone)
@@ -67,7 +68,7 @@ class TeacherModel(QSqlQueryModel):
         self.refresh()
 
     def delete(self, rid: int):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(DELETE)
         query.addBindValue(rid)
         query.exec()

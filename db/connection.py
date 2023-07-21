@@ -10,7 +10,7 @@ SELECT_LOGIN = """
 """
 
 UPDATE_PASSWORD = """
-    UPDATE appuser SET password_hash=? WHERE id=? ;
+    UPDATE appuser SET f_password_hash=? WHERE id=? ;
 """
 
 class Connection:
@@ -89,7 +89,7 @@ def get_user_info(login: str) -> Optional[dict]:
 
 def update_password(user_info: dict):
     query = QSqlQuery(ConnectionPool.get_admin_connection())
-    query.prepare(SELECT_LOGIN)
+    query.prepare(UPDATE_PASSWORD)
     query.addBindValue(user_info["password_hash"])
     query.addBindValue(user_info["user_id"])
     query.exec()

@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QApplication
+from PyQt6.QtGui import QImage
 from PyQt6.QtCore import pyqtSlot
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
@@ -7,8 +8,8 @@ from ui.views.group_view import GroupView
 from ui.dialogs.login_dialog import LoginDialog
 from ui.dialogs.change_password import ChangePassword
 from datetime import datetime
-from db.connection import get_user_info
-from utils import password_hash
+from db.connection import get_user_info, update_password, ConnectionPool
+from utils import password_hash, check_password
 
 
 class MainWindow(QMainWindow):
@@ -26,7 +27,6 @@ class MainWindow(QMainWindow):
         main_menu.student_mode_request.connect(self.student_mode_on)
         main_menu.group_mode_request.connect(self.group_mode_on)
 
-        allowed_flag = False
         if not self.authorize():
             main_menu.lock()
 
@@ -39,22 +39,21 @@ class MainWindow(QMainWindow):
             return False
         if not user_info["enabled"]:
             return False
-        if user_info["expire"] is not None:
+        if not user_info["expire"].isNull:
             if user_info["expire"] < datetime.now():
                 return False
-        if user_info["password_hash"] is None or len(user_info["password_hash"]) == 0:
-            dlg = ChangePassword(self)
-            if not dlg.exec():
+        if (user_info["password_hash"] is None or len(user_info["password_hash"]) == 0) and (dlg.password is None):
+            dlg_change = ChangePassword(self)
+            if not dlg_change.exec():
                 return False
-            user_info["password_hash"] = password_hash(dlg.password1, user_info["salt"])
+            user_info["password_hash"] = password_hash(dlg_change.password1, user_info["salt"])
+            update_password(user_info)
         else:
-            print("Проверить пароль")
-        print(user_info)
-
+            if not check_password(dlg.password, user_info["password_hash"], user_info["salt"]):
+                return False
+        QApplication.instance().set_authorized(user_info["login"], user_info["role"])
+        ConnectionPool.new_connection(user_info["login"], dlg.password)
         return True
-
-
-
 
     @pyqtSlot()
     def about(self):

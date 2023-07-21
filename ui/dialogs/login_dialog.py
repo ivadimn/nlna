@@ -37,17 +37,23 @@ class LoginDialog(QDialog):
         lay_buttons.addWidget(btn_yes)
         vbox.addLayout(lay_buttons)
 
-        btn_yes.clicked.connect(self.accept)
+        btn_yes.clicked.connect(self.finish)
         btn_no.clicked.connect(self.reject)
 
     @property
     def login(self):
-        return self.__edt_login.text().strip()
+        result = self.__edt_login.text().strip()
+        return None if result == "" else result
 
     @property
     def password(self):
-        return self.__edt_passwd.text().strip()
+        result = self.__edt_passwd.text().strip()
+        return None if result == "" else result
 
+    def finish(self):
+        if self.login is None:
+            return
+        self.accept()
 
 
 
