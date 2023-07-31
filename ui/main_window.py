@@ -10,6 +10,7 @@ from ui.dialogs.change_password import ChangePassword
 from datetime import datetime
 from db.connection import get_user_info, update_password, ConnectionPool
 from utils import password_hash, check_password
+from PyQt6.uic import loadUi
 
 
 class MainWindow(QMainWindow):

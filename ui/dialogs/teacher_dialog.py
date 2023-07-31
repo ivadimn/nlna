@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import pyqtSlot
 
 
+
 class TeacherDialog(QDialog):
 
     def __init__(self, parent=None):
