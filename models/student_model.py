@@ -1,4 +1,5 @@
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
+from db.connection import ConnectionPool
 
 
 SELECT_BY_ID = """
@@ -25,14 +26,15 @@ DELETE = """
 class StudentModel(QSqlQueryModel):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.__db = ConnectionPool.get_admin_connection()
         self.refresh()
 
     def refresh(self):
         sql = "SELECT id, f_fio, f_email, f_comment FROM student;"
-        self.setQuery(sql)
+        self.setQuery(sql, db=self.__db)
 
     def select(self, rid: int) -> tuple:
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(SELECT_BY_ID)
         query.addBindValue(rid)
         query.exec()

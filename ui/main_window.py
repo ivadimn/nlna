@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
             if not check_password(dlg.password, user_info["password_hash"], user_info["salt"]):
                 return False
         QApplication.instance().set_authorized(user_info["login"], user_info["role"])
-        ConnectionPool.new_connection(user_info["login"], dlg.password)
+        #ConnectionPool.new_connection(user_info["login"], dlg.password)
         return True
 
     @pyqtSlot()
