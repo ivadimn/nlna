@@ -3,6 +3,7 @@ from PyQt6.QtCore import pyqtSlot
 from models.teacher_model import TeacherModel
 from ui.dialogs.teacher_dialog import TeacherDialog
 from ui.views.view import View
+from db.teacher import Teacher
 
 
 class TeachersView(View):
@@ -18,7 +19,11 @@ class TeachersView(View):
     def add(self):
         dlg = TeacherDialog(parent=self)
         if dlg.exec():
-            self.model.add(dlg.fio, dlg.phone, dlg.email, dlg.comment)
+            data = Teacher()
+            dlg.get(data)
+            data.insert()
+
+
 
     @pyqtSlot()
     def update(self):
