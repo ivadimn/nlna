@@ -9,7 +9,6 @@ class View(QTableView):
 
         self.setSelectionBehavior(self.SelectionBehavior.SelectRows)
         self.setSelectionMode(self.SelectionMode.SingleSelection)
-        self.hideColumn(0)
         self.setWordWrap(False)
 
         vh = self.verticalHeader()

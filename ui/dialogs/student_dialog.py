@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import pyqtSlot
 from .ui_student_form import Ui_StudentForm
+from db.student import Student
 
 
 class _Frame(QFrame):
@@ -81,3 +82,15 @@ class StudentDialog(QDialog):
         if self.fio is None:
             return
         self.accept()
+
+    def get(self, data: Student):
+        data.login = self.login
+        data.fio = self.fio
+        data.email = self.email
+        data.comment = self.comment
+
+    def put(self, data: Student):
+        self.login = data.login
+        self.fio = data.fio
+        self.email = data.email
+        self.comment = data.comment

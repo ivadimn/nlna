@@ -3,6 +3,7 @@ from PyQt6.QtCore import pyqtSlot
 from models.student_model import StudentModel
 from ui.dialogs.student_dialog import StudentDialog
 from ui.views.view import View
+from db.student import Student
 
 
 class StudentView(View):
@@ -15,20 +16,27 @@ class StudentView(View):
         hh = self.horizontalHeader()
         hh.setSectionResizeMode(3, hh.ResizeMode.Stretch)
 
+    @property
+    def pk(self):
+        row = self.currentIndex().row()
+        return self.model.record(row).value(0)
+
     @pyqtSlot()
     def add(self):
         dlg = StudentDialog(parent=self)
         if dlg.exec():
-            self.model.add(dlg.fio, dlg.email, dlg.comment)
+            data = Student()
+            dlg.get(data)
+            data.insert()
+            self.model.refresh()
 
     @pyqtSlot()
     def update(self):
         dlg = StudentDialog(parent=self)
-        row = self.currentIndex().row()
-        rid = self.model.record(row).value(0)
-        (dlg.fio, dlg.email, dlg.comment) = self.model.select(rid)
+        data = Student(pk=self.pk).load()
+        dlg.put(data)
         if dlg.exec():
-            self.model.update(rid, dlg.fio, dlg.email, dlg.comment)
+            dlg.get(data)
 
     @pyqtSlot()
     def delete(self):

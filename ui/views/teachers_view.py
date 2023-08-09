@@ -12,8 +12,14 @@ class TeachersView(View):
         self.model = TeacherModel(parent=self)
         self.setModel(self.model)
 
+        self.hideColumn(0)
         hh = self.horizontalHeader()
         hh.setSectionResizeMode(4, hh.ResizeMode.Stretch)
+
+    @property
+    def pk(self):
+        row = self.currentIndex().row()
+        return self.model.record(row).value(0)
 
     @pyqtSlot()
     def add(self):
@@ -22,18 +28,15 @@ class TeachersView(View):
             data = Teacher()
             dlg.get(data)
             data.insert()
-
-
+            self.model.refresh()
 
     @pyqtSlot()
     def update(self):
         dlg = TeacherDialog(parent=self)
-        row = self.currentIndex().row()
-        rid = self.model.record(row).value(0)
-        print(rid)
-        (dlg.fio, dlg.phone, dlg.email, dlg.comment) = self.model.select(rid)
+        data = Teacher(pk=self.pk).load()
+        dlg.put(data)
         if dlg.exec():
-            self.model.update(rid, dlg.fio, dlg.phone, dlg.email, dlg.comment)
+            dlg.get(data)
 
     @pyqtSlot()
     def delete(self):

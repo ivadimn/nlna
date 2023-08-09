@@ -13,6 +13,19 @@ INSERT = """
     VALUES(?, ?, ?, ?, ?);
 """
 
+SELECT_ONE = """
+    SELECT 
+        u.f_login,
+        t.f_fio,
+        t.f_phone,
+        t.f_email,
+        t.f_comment,
+        t.user_id
+    from teacher as t
+    inner join appuser as u
+        on u.id = t.user_id 
+    where t.id = ?	;
+"""
 
 @dataclass
 class Teacher:
@@ -31,6 +44,23 @@ class Teacher:
     @property
     def teacher(self):
         return self.fio, self.phone, self.email, self.comment
+
+    def load(self) -> "Teacher":
+        conn = db = ConnectionPool.get_admin_connection()
+        query = QSqlQuery(db=conn)
+        query.prepare(SELECT_ONE)
+        query.addBindValue(self.pk)
+        if query.exec() and query.first():
+            self.login = query.value("f_login")
+            self.fio = query.value("f_fio")
+            self.phone = query.value("f_phone")
+            self.email = query.value("f_email")
+            self.comment = query.value("f_comment")
+            self.user_id = query.value("user_id")
+        else:
+            print(query.lastError().text())
+        return self
+
 
     def insert(self):
         conn = db=ConnectionPool.get_admin_connection()
