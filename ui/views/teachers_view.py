@@ -27,16 +27,18 @@ class TeachersView(View):
         if dlg.exec():
             data = Teacher()
             dlg.get(data)
-            data.insert()
+            data.save()
             self.model.refresh()
 
     @pyqtSlot()
     def update(self):
         dlg = TeacherDialog(parent=self)
         data = Teacher(pk=self.pk).load()
-        dlg.put(data)
+        dlg.put(data, for_update=True)
         if dlg.exec():
             dlg.get(data)
+            data.save()
+            self.model.refresh()
 
     @pyqtSlot()
     def delete(self):

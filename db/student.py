@@ -13,6 +13,11 @@ INSERT = """
     VALUES(?, ?, ?, ?);
 """
 
+UPDATE = """
+    UPDATE student SET f_fio=?, f_email=?, f_comment=? 
+    WHERE id=? ;
+"""
+
 SELECT_ONE = """
     SELECT 
         u.f_login,
@@ -86,3 +91,22 @@ class Student:
         else:
             conn.rollback()
             print(query.lastError().text())
+
+    def update(self):
+        conn = db = ConnectionPool.get_admin_connection()
+        query = QSqlQuery(db=conn)
+        data = self.student
+        query.prepare(UPDATE)
+        query.addBindValue(data[0])
+        query.addBindValue(data[1])
+        query.addBindValue(data[2])
+        query.addBindValue(data[3])
+        query.addBindValue(self.pk)
+        if not query.exec():
+            print(query.lastError().text())
+
+    def save(self):
+        if self.pk is None:
+            return self.insert()
+        else:
+            return self.update()

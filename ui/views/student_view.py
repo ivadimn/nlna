@@ -13,6 +13,7 @@ class StudentView(View):
         self.model = StudentModel()
         self.setModel(self.model)
 
+        self.hideColumn(0)
         hh = self.horizontalHeader()
         hh.setSectionResizeMode(3, hh.ResizeMode.Stretch)
 
@@ -27,16 +28,19 @@ class StudentView(View):
         if dlg.exec():
             data = Student()
             dlg.get(data)
-            data.insert()
+            data.save()
             self.model.refresh()
 
     @pyqtSlot()
     def update(self):
         dlg = StudentDialog(parent=self)
         data = Student(pk=self.pk).load()
-        dlg.put(data)
+        dlg.put(data, for_update=True)
         if dlg.exec():
             dlg.get(data)
+            data.save()
+            self.model.refresh()
+
 
     @pyqtSlot()
     def delete(self):

@@ -99,9 +99,10 @@ class TeacherDialog(QDialog):
         data.email = self.email
         data.comment = self.comment
 
-    def put(self, data: Teacher):
+    def put(self, data: Teacher, *, for_update=False):
         self.login = data.login
         self.fio = data.fio
         self.phone = data.phone
         self.email = data.email
         self.comment = data.comment
+        self.__frame.ui.edt_login.setReadOnly(for_update)
