@@ -1,9 +1,9 @@
 -- DROP TABLE public.teacher;
-CREATE DATABASE nlna;
-CREATE USER nlna_admin WITH ENCRYPTED PASSWORD '7922448';
-GRANT ALL PRIVILEGES ON DATABASE nlna TO nlna_admin;
-ALTER DATABASE nlna OWNER TO nlna_admin;
-REVOKE CONNECT ON DATABASE nlna FROM PUBLIC;
+CREATE DATABASE lna;
+CREATE USER admin WITH ENCRYPTED PASSWORD '7922448';
+GRANT ALL PRIVILEGES ON DATABASE lna TO admin;
+ALTER DATABASE lna OWNER TO admin;
+REVOKE CONNECT ON DATABASE lna FROM PUBLIC;
 
 CREATE TABLE public.teacher (
 	id serial4 NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE public.student (
 	CONSTRAINT student_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE public.groups (
+CREATE TABLE public.stgroup (
 	id serial4 NOT NULL,
 	f_title varchar NOT NULL,
 	f_comment varchar NULL,
