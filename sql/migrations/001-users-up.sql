@@ -1,3 +1,4 @@
+START TRANSACTION ;
 /*-------------------------------------------------------------------------------------*/
 CREATE TYPE user_role AS ENUM ('teacher', 'student', 'admin');
 
@@ -14,7 +15,7 @@ CREATE TABLE public.appuser (
     f_expire        timestamp,
     f_role          user_role NOT NULL,
     f_fio           text NOT NULL,
-    f_email         text,
+    f_email         text,               --добавить проверку правильности адреса
     f_comment       text,
     CONSTRAINT appuser_pk PRIMARY KEY (id),
 	CONSTRAINT appuser_login_un UNIQUE (f_login)
@@ -69,3 +70,8 @@ COMMENT ON COLUMN stgroup.f_title IS 'наименование группы';
 COMMENT ON COLUMN stgroup.f_comment IS 'комментарии';
 
 /*--------------------------------------------------------------------------------------*/
+ INSERT INTO  appuser(f_login, f_enabled, f_role, f_fio)
+        VALUES('admin', true, 'admin', 'Иванов Иван Иванович') ;
+
+/*--------------------------------------------------------------------------------------*/
+COMMIT TRANSACTION;

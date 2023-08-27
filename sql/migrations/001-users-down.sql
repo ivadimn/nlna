@@ -1,0 +1,9 @@
+START TRANSACTION ;
+
+DROP TABLE IF EXISTS public.stgroup ;
+DROP TABLE IF EXISTS public.student ;
+DROP TABLE IF EXISTS public.teacher ;
+DROP TABLE IF EXISTS public.appuser ;
+DROP TYPE IF EXISTS user_role ;
+
+COMMIT TRANSACTION;
