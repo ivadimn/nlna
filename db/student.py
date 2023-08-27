@@ -50,7 +50,7 @@ class Student:
         return self.fio, self.email, self.comment
 
     def load(self) -> "Student":
-        conn = db = ConnectionPool.get_admin_connection()
+        conn = ConnectionPool.get_admin_connection()
         query = QSqlQuery(db=conn)
         query.prepare(SELECT_ONE)
         query.addBindValue(self.pk)
