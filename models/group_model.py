@@ -1,24 +1,25 @@
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
+from db.connection import ConnectionPool
 
 
 SELECT_BY_ID = """
    SELECT f_title, f_comment 
-   FROM groups
+   FROM stgroup
    WHERE id=? ; 
 """
 
 INSERT = """
-    INSERT INTO groups (f_title, f_comment) 
+    INSERT INTO stgroup (f_title, f_comment) 
     VALUES(?, ?);
 """
 
 UPDATE = """
-    UPDATE groups SET f_title=?, f_comment=? 
+    UPDATE stgroup SET f_title=?, f_comment=? 
     WHERE id=? ;
 """
 
 DELETE = """
-    DELETE FROM groups WHERE id=? ;
+    DELETE FROM stgroup WHERE id=? ;
 """
 
 
@@ -26,14 +27,15 @@ class GroupModel(QSqlQueryModel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.__db = ConnectionPool.get_admin_connection()
         self.refresh()
 
     def refresh(self):
-        sql = "SELECT id, f_title, f_comment FROM groups ;"
-        self.setQuery(sql)
+        sql = "SELECT id, f_title, f_comment FROM stgroup ;"
+        self.setQuery(sql, db=self.__db)
 
     def select(self, rid: int) -> tuple:
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(SELECT_BY_ID)
         query.addBindValue(rid)
         query.exec()
@@ -44,7 +46,7 @@ class GroupModel(QSqlQueryModel):
         return result
 
     def add(self, title: str, comment: str):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(INSERT)
         query.addBindValue(title)
         query.addBindValue(comment)
@@ -52,7 +54,7 @@ class GroupModel(QSqlQueryModel):
         self.refresh()
 
     def update(self, rid: int, title: str, comment: str):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(UPDATE)
         query.addBindValue(title)
         query.addBindValue(comment)
@@ -61,7 +63,7 @@ class GroupModel(QSqlQueryModel):
         self.refresh()
 
     def delete(self, rid: int):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(DELETE)
         query.addBindValue(rid)
         query.exec()

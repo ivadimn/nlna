@@ -45,7 +45,7 @@ class StudentModel(QSqlQueryModel):
         return result
 
     def add(self, fio, email, comment):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(INSERT)
         query.addBindValue(fio)
         query.addBindValue(email)
@@ -54,7 +54,7 @@ class StudentModel(QSqlQueryModel):
         self.refresh()
 
     def update(self, rid: int, fio: str, email: str, comment: str):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(UPDATE)
         query.addBindValue(fio)
         query.addBindValue(email)
@@ -64,7 +64,7 @@ class StudentModel(QSqlQueryModel):
         self.refresh()
 
     def delete(self, rid: int):
-        query = QSqlQuery()
+        query = QSqlQuery(db=self.__db)
         query.prepare(DELETE)
         query.addBindValue(rid)
         query.exec()

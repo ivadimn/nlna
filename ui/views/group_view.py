@@ -12,6 +12,7 @@ class GroupView(View):
         self.model = GroupModel()
         self.setModel(self.model)
 
+        self.hideColumn(0)
         hh = self.horizontalHeader()
         hh.setSectionResizeMode(2, hh.ResizeMode.Stretch)
 
