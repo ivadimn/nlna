@@ -27,7 +27,7 @@ DELETE = """
 class TeacherModel(QSqlQueryModel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.__db = ConnectionPool.get_admin_connection()
+        self.__db = ConnectionPool.get_root_connection()
         self.refresh()
 
     def refresh(self):

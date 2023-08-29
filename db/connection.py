@@ -1,8 +1,11 @@
 from typing import Optional
-
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
-#import psycopg
+from PyQt6.QtWidgets import QApplication
 from settings import db_params
+
+import logging
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
 SELECT_LOGIN = """
     SELECT id, f_login, f_password_hash, f_enabled, f_expire, f_role, f_salt
@@ -12,6 +15,7 @@ SELECT_LOGIN = """
 UPDATE_PASSWORD = """
     UPDATE appuser SET f_password_hash=? WHERE id=? ;
 """
+
 
 class Connection:
 
@@ -26,8 +30,10 @@ class Connection:
         ok = self.__connection.open()
         if ok:
             print("Connection {0} successed!".format(name))
+            LOG.info("Connection {0} successed!".format(name))
         else:
             print("Connection failed!")
+            LOG.error("Connection failed!")
 
     def __del__(self):
         if self.__connection:
@@ -48,16 +54,16 @@ class ConnectionPool:
         return conn
 
     @classmethod
-    def get_admin_connection(cls) -> QSqlDatabase:
+    def get_root_connection(cls) -> QSqlDatabase:
         return cls.__connections[db_params["user"]].connection
 
     @classmethod
-    def get_noadmin_connection(cls) -> QSqlDatabase:
+    def get_noroot_connection(cls) -> QSqlDatabase:
         for key, value in cls.__connections.items():
             if key != db_params["user"]:
                 return value
         else:
-            return cls.get_noadmin_connection()
+            return cls.get_noroot_connection()
 
     @classmethod
     def get_connection(cls, name) -> QSqlDatabase:
@@ -65,11 +71,11 @@ class ConnectionPool:
             if key == name:
                 return value
         else:
-            return cls.get_noadmin_connection()
+            return cls.get_noroot_connection()
 
 
 def get_user_info(login: str) -> Optional[dict]:
-    query = QSqlQuery(ConnectionPool.get_admin_connection())
+    query = QSqlQuery(ConnectionPool.get_root_connection())
     query.prepare(SELECT_LOGIN)
     query.addBindValue(login)
     query.exec()
@@ -88,7 +94,7 @@ def get_user_info(login: str) -> Optional[dict]:
 
 
 def update_password(user_info: dict):
-    query = QSqlQuery(ConnectionPool.get_admin_connection())
+    query = QSqlQuery(ConnectionPool.get_root_connection())
     query.prepare(UPDATE_PASSWORD)
     query.addBindValue(user_info["password_hash"])
     query.addBindValue(user_info["user_id"])

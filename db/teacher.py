@@ -51,7 +51,7 @@ class Teacher:
         return self.fio, self.phone, self.email, self.comment
 
     def load(self) -> "Teacher":
-        conn = db = ConnectionPool.get_admin_connection()
+        conn = db = ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
         query.prepare(SELECT_ONE)
         query.addBindValue(self.pk)
@@ -67,7 +67,7 @@ class Teacher:
         return self
 
     def insert(self):
-        conn = db=ConnectionPool.get_admin_connection()
+        conn = db=ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
         data = self.user_data
         conn.transaction()
@@ -96,7 +96,7 @@ class Teacher:
             print(query.lastError().text())
 
     def update(self):
-        conn = db = ConnectionPool.get_admin_connection()
+        conn = db = ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
         data = self.teacher
         query.prepare(UPDATE)

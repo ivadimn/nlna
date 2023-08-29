@@ -1,7 +1,7 @@
 db_params = {
     "host": "10.0.0.101",
     "port": 5432,
-    "user": "admin",
+    "user": "develop",
     "dbname": "lna",
     "password": "7922448",
 }

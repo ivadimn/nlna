@@ -10,9 +10,12 @@ class Application(QApplication):
 
         self.__login = None
         self.__role = None
-
         conn = ConnectionPool.new_connection(db_params["user"], db_params["password"])
-        
+
+    @property
+    def log(self):
+        return self.__log
+
     @property
     def login(self):
         return self.__login
