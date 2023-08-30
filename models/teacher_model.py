@@ -1,6 +1,10 @@
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
 from db.connection import ConnectionPool
-#import psycopg
+from exceptions import MySqlModeError
+
+import logging
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
 
 SELECT_BY_ID = """
@@ -31,8 +35,14 @@ class TeacherModel(QSqlQueryModel):
         self.refresh()
 
     def refresh(self):
-        sql = "SELECT id, f_fio, f_phone, f_email, f_comment FROM teacher;"
+        sql = "SELECT pk, f_fio, f_phone, f_email, f_comment FROM v_teacher ;"
         self.setQuery(sql, db=self.__db)
+        if self.lastError().isValid():
+            err_text = self.lastError().text()
+            LOG.error(err_text)
+            raise MySqlModeError(err_text)
+        else:
+            LOG.info("Teacher query was OK!")
 
     def select(self, rid: int) -> tuple:
         query = QSqlQuery(db=self.__db)

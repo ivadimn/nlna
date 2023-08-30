@@ -1,5 +1,6 @@
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
 from db.connection import ConnectionPool
+from exceptions import MySqlModeError
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -33,11 +34,12 @@ class StudentModel(QSqlQueryModel):
         self.refresh()
 
     def refresh(self):
-        sql = "SELECT id, f_fio, f_email, f_comment FROM student;"
+        sql = "SELECT pk, f_fio, f_email, f_comment FROM v_student;"
         self.setQuery(sql, db=self.__db)
         if self.lastError().isValid():
             err_text = self.lastError().text()
             LOG.error(err_text)
+            raise MySqlModeError(err_text)
         else:
             LOG.info("Student query was OK!")
 

@@ -1,0 +1,2 @@
+class MySqlModeError(Exception):
+    pass
