@@ -2,6 +2,11 @@ from dataclasses import dataclass
 from PyQt6.QtSql import QSqlQuery
 from db.connection import ConnectionPool
 
+import logging
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
+
+
 INSERT_USER = """
     INSERT INTO appuser (f_login, f_salt, f_role)
     VALUES (?, ?, ?)
@@ -12,6 +17,10 @@ INSERT = """
     INSERT INTO teacher (f_fio, f_phone, f_email, f_comment, user_id) 
     VALUES(?, ?, ?, ?, ?);
 """
+
+# parameters: f_login, f_fio, f_phone, f_email, f_comment
+INSERT_ONE = " SELECT new_teacher(?, ?, ?, ?, ?) ; "
+
 
 UPDATE = """
     UPDATE teacher SET f_fio=?, f_phone=?, f_email=?, f_comment=? 
@@ -47,8 +56,8 @@ class Teacher:
         return self.login, "1", "teacher"
 
     @property
-    def teacher(self):
-        return self.fio, self.phone, self.email, self.comment
+    def teacher_data(self):
+        return self.login, self.fio, self.phone, self.email, self.comment
 
     def load(self) -> "Teacher":
         conn = db = ConnectionPool.get_root_connection()
@@ -69,36 +78,23 @@ class Teacher:
     def insert(self):
         conn = db=ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
-        data = self.user_data
-        conn.transaction()
-        query.prepare(INSERT_USER)
+        data = self.teacher_data
+        query.prepare(INSERT_ONE)
         query.addBindValue(data[0])
         query.addBindValue(data[1])
         query.addBindValue(data[2])
+        query.addBindValue(data[3])
+        query.addBindValue(data[4])
         if query.exec() and query.first():
-            self.user_id = query.value("id")
-            query.prepare(INSERT)
-            data = self.teacher
-            query.addBindValue(data[0])
-            query.addBindValue(data[1])
-            query.addBindValue(data[2])
-            query.addBindValue(data[3])
-            query.addBindValue(self.user_id)
-            if query.exec():
-                self.pk = query.lastInsertId()
-                print(self.pk)
-                conn.commit()
-            else:
-                conn.rollback()
-                print(query.lastError().text())
+            self.pk = query.value(0)
+            LOG.info("Teacher {0} inserted successfully!".format(self.fio))
         else:
-            conn.rollback()
-            print(query.lastError().text())
+            LOG.info(query.lastError().text())
 
     def update(self):
         conn = db = ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
-        data = self.teacher
+        data = self.teacher_data
         query.prepare(UPDATE)
         query.addBindValue(data[0])
         query.addBindValue(data[1])
