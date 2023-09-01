@@ -78,4 +78,49 @@ BEGIN
 END;
 $BODY$;
 
+/*-------------------------------------------------------------------------------------------------------------*/
+
+CREATE FUNCTION update_teacher(pk int,
+        p_fio text, p_phone text, p_email text, p_comment text) RETURNS int
+LANGUAGE plpgsql
+SECURITY definer
+CALLED ON NULL INPUT
+VOLATILE
+AS $BODY$
+DECLARE
+    d_user_id int;
+BEGIN
+    SELECT user_id FROM teacher WHERE id = pk INTO strict d_user_id ;
+    UPDATE appuser SET
+            f_fio = p_fio,
+            f_email = p_email,
+            f_comment = p_comment
+        WHERE id = d_user_id ;
+    UPDATE teacher SET
+            f_phone = p_phone
+        WHERE id = pk ;
+    return pk ;
+END ;
+$BODY$;
+
+/*-----------------------------------------------------------------------------------------------------------------*/
+
+CREATE FUNCTION delete_teacher(pk int) RETURNS int
+LANGUAGE plpgsql
+SECURITY definer
+CALLED ON NULL INPUT
+VOLATILE
+AS $BODY$
+DECLARE
+    d_user_id int;
+BEGIN
+    SELECT user_id FROM teacher WHERE id = pk INTO strict d_user_id ;
+    DELETE FROM teacher WHERE id = pk ;
+    DELETE FROM appuser WHERE id = d_user_id ;
+    return pk ;
+END ;
+$BODY$;
+
+/*-----------------------------------------------------------------------------------------------------------------*/
+
 COMMIT TRANSACTION ;
