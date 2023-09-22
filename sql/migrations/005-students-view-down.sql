@@ -1,5 +1,7 @@
 START TRANSACTION ;
 
+DROP FUNCTION IF EXISTS delete_student(int);
+DROP FUNCTION IF EXISTS update_student(int, text, text, text);
 DROP FUNCTION IF EXISTS delete_teacher(int);
 DROP FUNCTION IF EXISTS update_teacher(int, text, text, text, text);
 DROP FUNCTION IF EXISTS new_student(text, text, text, text);

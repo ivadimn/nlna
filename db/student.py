@@ -6,13 +6,13 @@ import logging
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
-INSERT_USER = """
+deprecated_INSERT_USER = """
     INSERT INTO appuser (f_login, f_salt, f_role)
     VALUES (?, ?, ?)
     returning id ;
 """
 
-INSERT = """
+deprecated_INSERT = """
     INSERT INTO student (f_fio, f_email, f_comment, user_id) 
     VALUES(?, ?, ?, ?);
 """
@@ -20,12 +20,22 @@ INSERT = """
 # parameters: f_login, f_fio, f_email, f_comment
 INSERT_ONE = " SELECT new_student(?, ?, ?, ?) ; "
 
-UPDATE = """
+deprecate_UPDATE = """
     UPDATE student SET f_fio=?, f_email=?, f_comment=? 
     WHERE id=? ;
 """
 
-SELECT_ONE = """
+# parameters: pk, f_fio, f_email, f_comment
+UPDATE_ONE = """
+    SELECT update_student(?, ?, ?, ?) ;
+"""
+
+# parameters: pk, f_fio, f_email, f_comment
+DELETE_ONE = """
+    SELECT delete_student(?) ;
+"""
+
+deprecated_SELECT_ONE = """
     SELECT 
         u.f_login,
         t.f_fio,
@@ -36,6 +46,12 @@ SELECT_ONE = """
     inner join appuser as u
         on u.id = t.user_id 
     where t.id = ?	;
+"""
+
+SELECT_ONE = """
+    SELECT pk, f_login, f_fio, f_email, f_comment, user_id
+    FROM v_student 
+    WHERE pk = ? ;
 """
 
 
@@ -49,7 +65,7 @@ class Student:
     user_id: int = None
 
     @property
-    def user_data(self):
+    def deprecated_user_data(self):
         return self.login, "1", "student"
 
     @property
@@ -72,7 +88,7 @@ class Student:
         return self
 
     def insert(self):
-        conn = db = ConnectionPool.get_root_connection()
+        conn = ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
         data = self.student_data
         query.prepare(INSERT_ONE)
@@ -87,17 +103,28 @@ class Student:
             LOG.info(query.lastError().text())
 
     def update(self):
-        conn = db = ConnectionPool.get_root_connection()
+        conn = ConnectionPool.get_root_connection()
         query = QSqlQuery(db=conn)
         data = self.student_data
-        query.prepare(UPDATE)
-        query.addBindValue(data[0])
+        query.prepare(UPDATE_ONE)
+        query.addBindValue(self.pk)
         query.addBindValue(data[1])
         query.addBindValue(data[2])
         query.addBindValue(data[3])
+        if query.exec():
+            LOG.info("Student {0} updated successfully!".format(self.fio))
+        else:
+            LOG.info(query.lastError().text())
+
+    def delete(self):
+        conn = ConnectionPool.get_root_connection()
+        query = QSqlQuery(db=conn)
+        query.prepare(DELETE_ONE)
         query.addBindValue(self.pk)
-        if not query.exec():
-            print(query.lastError().text())
+        if query.exec():
+            LOG.info("Student pk = {0} deleted successfully!".format(self.pk))
+        else:
+            LOG.info(query.lastError().text())
 
     def save(self):
         if self.pk is None:

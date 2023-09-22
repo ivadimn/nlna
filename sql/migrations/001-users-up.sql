@@ -71,7 +71,7 @@ COMMENT ON COLUMN stgroup.f_comment IS 'комментарии';
 
 /*--------------------------------------------------------------------------------------*/
  INSERT INTO  appuser(f_login, f_enabled, f_role, f_fio)
-        VALUES('admin', true, 'admin', 'Иванов Иван Иванович') ;
+        VALUES('admin', true, 'admin', 'Ivanov Vadim Nikolaevich') ;
 
 /*--------------------------------------------------------------------------------------*/
 COMMIT TRANSACTION;

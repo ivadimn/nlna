@@ -121,6 +121,43 @@ BEGIN
 END ;
 $BODY$;
 
-/*-----------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------*/
+create function update_student(pk int, p_fio text, p_email text, p_comment text) returns int
+LANGUAGE plpgsql
+SECURITY definer
+CALLED ON NULL INPUT
+VOLATILE
+AS $BODY$
+DECLARE
+    d_user_id int ;
+BEGIN
+    SELECT user_id FROM student WHERE id = pk INTO strict d_user_id ;
+    UPDATE appuser SET
+            f_fio = p_fio,
+            f_email = p_email,
+            f_comment = p_comment
+        WHERE id = d_user_id ;
+    return pk ;
+END ;
+$BODY$;
 
+/*----------------------------------------------------------------------------------------------------*/
+
+create function delete_student(pk int) returns int
+LANGUAGE plpgsql
+SECURITY definer
+CALLED ON NULL INPUT
+VOLATILE
+AS $BODY$
+DECLARE
+    d_user_id int ;
+BEGIN
+    SELECT user_id FROM student WHERE id = pk INTO strict d_user_id ;
+    DELETE FROM student WHERE id = pk ;
+    DELETE FROM appuser WHERE id = d_user_id ;
+    return pk ;
+END;
+$BODY$ ;
+
+/*----------------------------------------------------------------------------------------------------*/
 COMMIT TRANSACTION ;

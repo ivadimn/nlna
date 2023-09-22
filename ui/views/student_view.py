@@ -41,11 +41,9 @@ class StudentView(View):
             data.save()
             self.model.refresh()
 
-
     @pyqtSlot()
     def delete(self):
-        row = self.currentIndex().row()
-        rid = self.model.record(row).value(0)
         ans = QMessageBox.question(self, "Удаление записи", "Вы уверены, что хотите удалить запись?")
         if ans == QMessageBox.StandardButton.Yes:
-            self.model.delete(rid)
+            Student(pk=self.pk).delete()
+            self.model.refresh()

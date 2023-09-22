@@ -10,7 +10,7 @@ CREATE TABLE public.variant (
 COMMENT ON TABLE variant IS 'Cведения о варианте перечня задач';
 COMMENT ON COLUMN variant.f_title IS 'Наименование варианта';
 COMMENT ON COLUMN variant.f_created IS 'время создание варианта';
-COMMENT ON COLUMN variant.teacher_id IS 'Идентификатор составителя варианта';
+COMMENT ON COLUMN variant.teacher_id IS 'дентификатор составителя варианта';
 
 /*-----------------------------------------------------------------------------------------------------*/
 
@@ -27,7 +27,7 @@ COMMENT ON TABLE task IS 'Cведения о задачt';
 COMMENT ON COLUMN task.f_title IS 'Наименование задачи';
 COMMENT ON COLUMN task.f_content IS 'Содержание задания ';
 COMMENT ON COLUMN task.f_created IS 'Время создание задачи';
-COMMENT ON COLUMN task.teacher_id IS 'Идентификатор автора задачи';
+COMMENT ON COLUMN task.teacher_id IS 'дентификатор автора задачи';
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -43,8 +43,8 @@ CREATE TABLE public.task_variant (
 );
 
 COMMENT ON TABLE task_variant IS 'Cведения о задачах в вариантах';
-COMMENT ON COLUMN task_variant.variant_id IS 'Идентификатор варианта';
-COMMENT ON COLUMN task_variant.task_id IS 'Идентификатор задачи ';
+COMMENT ON COLUMN task_variant.variant_id IS 'дентификатор варианта';
+COMMENT ON COLUMN task_variant.task_id IS 'дентификатор задачи ';
 COMMENT ON COLUMN task_variant.f_ordinal IS 'Порядковый номер задачи в варианте';
 
 COMMIT TRANSACTION ;
