@@ -1,8 +1,9 @@
 from PyQt6.QtGui import QActionGroup
-from PyQt6.QtWidgets import QMenuBar
+from PyQt6.QtWidgets import QMenuBar, QDockWidget
 from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 from ui.views.view import View
+from ui.view_menu import ViewMenu
 
 
 class MainMenu(QMenuBar):
@@ -19,7 +20,6 @@ class MainMenu(QMenuBar):
         self.__teacher_add = teacher_menu.addAction("Добавить...")
         self.__teacher_update = teacher_menu.addAction("Редактировать...")
         self.__teacher_delete = teacher_menu.addAction("Удалить...")
-
 
         student_menu = self.addMenu("Студенты")
         self.__student_menu_action = student_menu.menuAction()
@@ -51,6 +51,9 @@ class MainMenu(QMenuBar):
         act.setCheckable(True)
         act.toggled.connect(self.toggle_group_mode)
         ag.addAction(act)
+
+        self.__view_menu = vm = ViewMenu(parent=self)
+        self.addMenu(vm)
 
         help_menu = self.addMenu("Справка")
         self.__about = help_menu.addAction("О программе...")
@@ -96,7 +99,7 @@ class MainMenu(QMenuBar):
         else:
             self.group_mode_request.emit()
 
-    def set_group_mode(self, view: View):
+    def set_group_mode(self, view: View, dock_widgets=[]):
         self.__group_add.triggered.connect(view.add)
         self.__group_update.triggered.connect(view.update)
         self.__group_delete.triggered.connect(view.delete)
@@ -106,6 +109,9 @@ class MainMenu(QMenuBar):
         self.__group_add.setEnabled(True)
         self.__group_update.setEnabled(True)
         self.__group_delete.setEnabled(True)
+
+        for wid in dock_widgets:
+            self.__view_menu.add_window(wid)
 
     def set_teacher_mode(self, view: View):
         self.__teacher_add.triggered.connect(view.add)
@@ -118,7 +124,7 @@ class MainMenu(QMenuBar):
         self.__teacher_update.setEnabled(True)
         self.__teacher_delete.setEnabled(True)
 
-    def set_student_mode(self, view: View):
+    def set_student_mode(self, view: View, dock_widgets=[]):
         self.__student_add.triggered.connect(view.add)
         self.__student_update.triggered.connect(view.update)
         self.__student_delete.triggered.connect(view.delete)
@@ -128,6 +134,9 @@ class MainMenu(QMenuBar):
         self.__student_add.setEnabled(True)
         self.__student_update.setEnabled(True)
         self.__student_delete.setEnabled(True)
+
+        for wid in dock_widgets:
+            self.__view_menu.add_window(wid)
 
     def disable_all_modes(self):
         self.__teacher_menu_action.setVisible(False)

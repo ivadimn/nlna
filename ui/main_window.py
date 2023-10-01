@@ -1,6 +1,11 @@
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QApplication
+from PyQt6.QtWidgets import (
+    QApplication,
+    QDockWidget,
+    QFrame,
+    QMainWindow,
+    QMessageBox)
 from PyQt6.QtGui import QImage
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, Qt
 from ui.main_menu import MainMenu
 from ui.views.teachers_view import TeachersView
 from ui.views.student_view import StudentView
@@ -10,6 +15,7 @@ from ui.dialogs.change_password import ChangePassword
 from datetime import datetime
 from db.connection import get_user_info, update_password, ConnectionPool
 from utils import password_hash, check_password
+from ui.views.stgroups_view import StgroupsView
 from PyQt6.uic import loadUi
 
 
@@ -30,6 +36,10 @@ class MainWindow(QMainWindow):
 
         if not self.authorize():
             main_menu.lock()
+
+    @property
+    def all_docks(self):
+        return [x for x in self.children() if isinstance(x, QDockWidget)]
 
     def authorize(self) -> bool:
         dlg = LoginDialog(self)
@@ -69,28 +79,55 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def teacher_mode_on(self):
-        old_view = self.centralWidget()
+        if not self.mode_off(atype=TeachersView):
+            return
         view = TeachersView(parent=self)
         self.setCentralWidget(view)
         self.menuBar().set_teacher_mode(view)
         print("Teacher mode on")
-        if old_view is not None:
-            old_view.deleteLater()
 
     @pyqtSlot()
     def student_mode_on(self):
-        old_view = self.centralWidget()
+        if not self.mode_off(atype=StudentView):
+            return
         view = StudentView(parent=self)
         self.setCentralWidget(view)
-        self.menuBar().set_student_mode(view)
-        if old_view is not None:
-            old_view.deleteLater()
+
+        dock_title = QApplication.translate("MainWindow", "Groups")
+        dock_widget = QDockWidget(dock_title, parent=self)
+        dock_frame = QFrame(parent=dock_widget)
+        dock_frame.setStyleSheet("background: green")
+        dock_widget.setWidget(dock_frame)
+
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock_widget)
+        self.menuBar().set_student_mode(view, [dock_widget])
 
     @pyqtSlot()
     def group_mode_on(self):
-        old_view = self.centralWidget()
+        if not self.mode_off(atype=GroupView):
+            return
         view = GroupView(parent=self)
-        self.setCentralWidget(view)
-        self.menuBar().set_group_mode(view)
-        if old_view is not None:
-            old_view.deleteLater()
+        self.setCentralWidget(view)        # меняем центральный виджет
+
+        dock_title = QApplication.translate("MainWindow", "Students")
+        dock_widget = QDockWidget(dock_title, parent=self)
+        docked_window = StgroupsView(parent=dock_widget)
+        #docked_window.setStyleSheet("background: yellow")
+        dock_widget.setWidget(docked_window)
+
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock_widget)
+        self.menuBar().set_group_mode(view, [dock_widget])
+
+    def mode_off(self, atype=None) -> bool:
+        old = self.centralWidget()
+        if old is None:
+            return True
+        if isinstance(old, atype):
+            return False
+        # запросить пользователя о допустимости выключения режима
+        self.setCentralWidget(None)
+        old.deleteLater()
+        for w in self.all_docks:
+            w.deleteLater()
+        return True
+
