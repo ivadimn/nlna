@@ -15,7 +15,7 @@ from ui.dialogs.change_password import ChangePassword
 from datetime import datetime
 from db.connection import get_user_info, update_password, ConnectionPool
 from utils import password_hash, check_password
-from ui.views.stgroups_view import StgroupsView
+from ui.views.grp_students_view import GrpStudentsView
 from PyQt6.uic import loadUi
 
 
@@ -84,7 +84,6 @@ class MainWindow(QMainWindow):
         view = TeachersView(parent=self)
         self.setCentralWidget(view)
         self.menuBar().set_teacher_mode(view)
-        print("Teacher mode on")
 
     @pyqtSlot()
     def student_mode_on(self):
@@ -111,11 +110,11 @@ class MainWindow(QMainWindow):
 
         dock_title = QApplication.translate("MainWindow", "Students")
         dock_widget = QDockWidget(dock_title, parent=self)
-        docked_window = StgroupsView(parent=dock_widget)
-        #docked_window.setStyleSheet("background: yellow")
+        docked_window = GrpStudentsView(parent=dock_widget)
         dock_widget.setWidget(docked_window)
-
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock_widget)
+
+        view.group_selected.connect(docked_window.select_group)
         self.menuBar().set_group_mode(view, [dock_widget])
 
     def mode_off(self, atype=None) -> bool:

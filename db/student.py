@@ -84,7 +84,7 @@ class Student:
             self.comment = query.value("f_comment")
             self.user_id = query.value("user_id")
         else:
-            print(query.lastError().text())
+            LOG.info(query.lastError().text())
         return self
 
     def insert(self):

@@ -1,11 +1,13 @@
 from PyQt6.QtWidgets import QTableView, QMessageBox
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, QModelIndex, Qt, pyqtSignal
 from models.group_model import GroupModel
 from ui.dialogs.group_dialog import GroupDialog
 from ui.views.view import View
 
 
 class GroupView(View):
+
+    group_selected = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -38,3 +40,10 @@ class GroupView(View):
         ans = QMessageBox.question(self, "Удаление записи", "Вы уверены, что хотите удалить запись?")
         if ans == QMessageBox.StandardButton.Yes:
             self.model.delete(rid)
+
+    def currentChanged(self, current: QModelIndex, previous: QModelIndex) -> None:
+        if current.isValid():
+            group_id = current.data(Qt.ItemDataRole.UserRole+0)
+        else:
+            group_id = None
+        self.group_selected.emit(group_id)

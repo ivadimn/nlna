@@ -15,4 +15,4 @@ class ViewMenu(QMenu):
 
     def add_window(self, dock_widget: QDockWidget):
         self.__windows_menu.addAction(dock_widget.toggleViewAction())
-        print("dock_widget added!!")
+
