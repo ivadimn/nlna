@@ -16,6 +16,7 @@ from datetime import datetime
 from db.connection import get_user_info, update_password, ConnectionPool
 from utils import password_hash, check_password
 from ui.views.grp_students_view import GrpStudentsView
+from ui.views.st_groups_view import StGroupsView
 from PyQt6.uic import loadUi
 
 
@@ -94,11 +95,12 @@ class MainWindow(QMainWindow):
 
         dock_title = QApplication.translate("MainWindow", "Groups")
         dock_widget = QDockWidget(dock_title, parent=self)
-        dock_frame = QFrame(parent=dock_widget)
-        dock_frame.setStyleSheet("background: green")
-        dock_widget.setWidget(dock_frame)
+        dock_window = StGroupsView(parent=dock_widget)
+        dock_widget.setWidget(dock_window)
 
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock_widget)
+
+        view.student_selected.connect(dock_window.select_student)
         self.menuBar().set_student_mode(view, [dock_widget])
 
     @pyqtSlot()

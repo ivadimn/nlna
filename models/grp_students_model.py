@@ -50,6 +50,7 @@ class GrpStudentsModel(QAbstractTableModel):
         try:
             self.__students.clear()
             if group_id is None:
+                self.endResetModel()
                 return
             self.__get_students(group_id)
         finally:

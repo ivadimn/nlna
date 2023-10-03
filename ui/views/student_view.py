@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMessageBox
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, pyqtSignal, QModelIndex, Qt
 from models.student_model import StudentModel
 from ui.dialogs.student_dialog import StudentDialog
 from ui.views.view import View
@@ -7,6 +7,8 @@ from db.student import Student
 
 
 class StudentView(View):
+
+    student_selected = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -47,3 +49,10 @@ class StudentView(View):
         if ans == QMessageBox.StandardButton.Yes:
             Student(pk=self.pk).delete()
             self.model.refresh()
+
+    def currentChanged(self, current: QModelIndex, previous: QModelIndex) -> None:
+        if current.isValid():
+            student_id = current.data(Qt.ItemDataRole.UserRole+0)
+        else:
+            student_id = None
+        self.student_selected.emit(student_id)

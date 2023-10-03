@@ -1,4 +1,7 @@
+import typing
+
 from PyQt6.QtSql import QSqlQueryModel, QSqlQuery
+from PyQt6.QtCore import Qt, QModelIndex
 from db.connection import ConnectionPool
 from exceptions import MySqlModeError
 
@@ -79,3 +82,10 @@ class StudentModel(QSqlQueryModel):
         query.addBindValue(rid)
         query.exec()
         self.refresh()
+
+    def data(self, item: QModelIndex, role: int = ...) -> typing.Any:
+        if role != Qt.ItemDataRole.UserRole+0:
+            return super().data(item, role)
+        r = item.row()
+        rec = self.record(r)
+        return rec.value(0)
