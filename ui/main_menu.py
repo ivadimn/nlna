@@ -32,6 +32,8 @@ class MainMenu(QMenuBar):
         self.__group_add = group_menu.addAction("Добавить...")
         self.__group_update = group_menu.addAction("Редактировать...")
         self.__group_delete = group_menu.addAction("Удалить...")
+        self.__group_old_add_student = group_menu.addAction("Добавить студента...")
+        self.__group_old_delete_student = group_menu.addAction("Удалить студента...")
 
         mode_menu = menu = self.addMenu("Режимы")
         mode_action_group = ag = QActionGroup(self)
@@ -112,6 +114,8 @@ class MainMenu(QMenuBar):
 
         for wid in dock_widgets:
             self.__view_menu.add_window(wid)
+            if hasattr(wid.widget(), "add_old_student"):
+                self.__group_old_add_student.triggered.connect(wid.widget().add_old_student)
 
     def set_teacher_mode(self, view: View):
         self.__teacher_add.triggered.connect(view.add)
