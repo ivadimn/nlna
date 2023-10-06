@@ -21,7 +21,12 @@ class GrpStudentsModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__students = []
+        self.__group_id = None
         self.refill()
+
+    @property
+    def group_id(self):
+        return self.__group_id
 
     def rowCount(self, parent_index: QModelIndex = ...) -> int:
         if parent_index.isValid():
@@ -47,6 +52,7 @@ class GrpStudentsModel(QAbstractTableModel):
     @pyqtSlot(int)
     def refill(self, group_id=None):
         self.beginResetModel()
+        self.__group_id = group_id
         try:
             self.__students.clear()
             if group_id is None:

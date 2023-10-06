@@ -17,6 +17,9 @@ class GrpStudentsView(QTableView):
 
     @pyqtSlot()
     def add_old_student(self):
-        dlg = OldDialog(parent=self)
+        group_id = self.model().group_id
+        if group_id is None:
+            return
+        dlg = OldDialog(group_id, parent=self)
         dlg.exec()
 
