@@ -21,5 +21,6 @@ class GrpStudentsView(QTableView):
         if group_id is None:
             return
         dlg = OldDialog(group_id, parent=self)
-        dlg.exec()
+        if dlg.exec():
+            print(dlg.selected_ids)
 
